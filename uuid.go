@@ -30,12 +30,15 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"database/sql/driver"
+	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"hash"
 	"net"
 	"os"
+	"regexp"
 	"sync"
 	"time"
 )
@@ -79,6 +82,9 @@ var (
 	urnPrefix  = []byte("urn:uuid:")
 	byteGroups = []int{8, 4, 4, 4, 12}
 )
+
+// Base64 Format Suffix.
+var rep = regexp.MustCompile(`==$`)
 
 func initClockSequence() {
 	buf := make([]byte, 2)
@@ -273,6 +279,32 @@ func (u *UUID) UnmarshalBinary(data []byte) (err error) {
 	copy(u[:], data)
 
 	return
+}
+
+// MarshalJSON() is experimental method.
+func (u UUID) MarshalJSON() ([]byte, error) {
+	encoded := base64.StdEncoding.EncodeToString(u.Bytes())
+	encoded = rep.ReplaceAllString(encoded, "")
+
+	return json.Marshal(encoded)
+}
+
+// UnmarshalJSON() is experimental method same as MarshalJSON().
+func (u *UUID) UnmarshalJSON(text []byte) (err error) {
+	if len(text) != 24 {
+		err = fmt.Errorf("uuid: invalid UUID string: %s", text)
+		return
+	}
+
+	text = append(text[1:23], "=="...)
+	decoded, err := base64.StdEncoding.DecodeString(string(text))
+
+	if err != nil {
+		return err
+	} else {
+		u.UnmarshalBinary(decoded)
+		return nil
+	}
 }
 
 // Value implements the driver.Valuer interface.
