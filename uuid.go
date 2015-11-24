@@ -283,7 +283,7 @@ func (u *UUID) UnmarshalBinary(data []byte) (err error) {
 
 // MarshalJSON() is experimental method.
 func (u UUID) MarshalJSON() ([]byte, error) {
-	encoded := base64.StdEncoding.EncodeToString(u.Bytes())
+	encoded := base64.URLEncoding.EncodeToString(u.Bytes())
 	encoded = rep.ReplaceAllString(encoded, "")
 
 	return json.Marshal(encoded)
