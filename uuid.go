@@ -281,15 +281,32 @@ func (u *UUID) UnmarshalBinary(data []byte) (err error) {
 	return
 }
 
-// MarshalJSON() is experimental method.
-func (u UUID) MarshalJSON() ([]byte, error) {
-	encoded := base64.URLEncoding.EncodeToString(u.Bytes())
-	encoded = rep.ReplaceAllString(encoded, "")
+func (u UUID) Base64String() string {
 
-	return json.Marshal(encoded)
+	return rep.ReplaceAllString(base64.URLEncoding.EncodeToString(u.Bytes()), "")
 }
 
-// UnmarshalJSON() is experimental method same as MarshalJSON().
+// DecodeBase64StringtoUUIDString() is experimental function.
+func DecodeBase64StringtoUUIDString(text string) (string, error) {
+
+	text = text + "=="
+	b, err := base64.URLEncoding.DecodeString(text)
+	if err != nil {
+		return "", err
+
+	} else {
+		var id UUID
+		id.UnmarshalBinary(b)
+
+		return id.String(), nil
+	}
+}
+
+func (u UUID) MarshalJSON() ([]byte, error) {
+	return json.Marshal(u.Base64String())
+}
+
+// UnmarshalJSON() is experimental method.
 func (u *UUID) UnmarshalJSON(text []byte) (err error) {
 	if len(text) != 24 {
 		err = fmt.Errorf("uuid: invalid UUID string: %s", text)
@@ -297,7 +314,7 @@ func (u *UUID) UnmarshalJSON(text []byte) (err error) {
 	}
 
 	text = append(text[1:23], "=="...)
-	decoded, err := base64.StdEncoding.DecodeString(string(text))
+	decoded, err := base64.URLEncoding.DecodeString(string(text))
 
 	if err != nil {
 		return err
