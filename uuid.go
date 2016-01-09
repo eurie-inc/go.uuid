@@ -35,6 +35,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/jbenet/go-base58"
 	"hash"
 	"net"
 	"os"
@@ -286,42 +287,26 @@ func (u UUID) Base64String() string {
 	return rep.ReplaceAllString(base64.URLEncoding.EncodeToString(u.Bytes()), "")
 }
 
-// DecodeBase64StringtoUUIDString() is experimental function.
-func DecodeBase64StringtoUUIDString(text string) (string, error) {
-
-	text = text + "=="
-	b, err := base64.URLEncoding.DecodeString(text)
-	if err != nil {
-		return "", err
-
-	} else {
-		var id UUID
-		id.UnmarshalBinary(b)
-
-		return id.String(), nil
-	}
+func (u UUID) Base58String() string {
+	return base58.EncodeAlphabet(u.Bytes(), base58.BTCAlphabet)
 }
 
 func (u UUID) MarshalJSON() ([]byte, error) {
-	return json.Marshal(u.Base64String())
+	return json.Marshal(u.Base58String())
 }
 
-// UnmarshalJSON() is experimental method.
 func (u *UUID) UnmarshalJSON(text []byte) (err error) {
-	if len(text) != 24 {
-		err = fmt.Errorf("uuid: invalid UUID string: %s", text)
-		return
-	}
 
-	text = append(text[1:23], "=="...)
-	decoded, err := base64.URLEncoding.DecodeString(string(text))
+	buf := base58.Decode(string(text[1:23]))
+	err = u.UnmarshalBinary(buf)
 
-	if err != nil {
-		return err
-	} else {
-		u.UnmarshalBinary(decoded)
-		return nil
-	}
+	return
+}
+
+func FromBase58String(text string) (u UUID, err error) {
+	buf := base58.Decode(text)
+	err = u.UnmarshalBinary(buf)
+	return
 }
 
 // Value implements the driver.Valuer interface.
