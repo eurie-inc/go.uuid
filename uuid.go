@@ -40,6 +40,7 @@ import (
 	"net"
 	"os"
 	"regexp"
+	"strings"
 	"sync"
 	"time"
 )
@@ -297,7 +298,8 @@ func (u UUID) MarshalJSON() ([]byte, error) {
 
 func (u *UUID) UnmarshalJSON(text []byte) (err error) {
 
-	buf := base58.Decode(string(text[1:23]))
+	str := string(text)
+	buf := base58.Decode(strings.Replace(str, "\"", "", -1))
 	err = u.UnmarshalBinary(buf)
 
 	return
