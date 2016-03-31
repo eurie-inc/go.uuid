@@ -35,7 +35,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/jbenet/go-base58"
 	"hash"
 	"net"
 	"os"
@@ -43,6 +42,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/jbenet/go-base58"
 )
 
 // UUID layout variants.
@@ -290,10 +291,15 @@ func (u UUID) Base64String() string {
 
 func (u UUID) Base58String() string {
 	return base58.EncodeAlphabet(u.Bytes(), base58.BTCAlphabet)
+
 }
 
 func (u UUID) MarshalJSON() ([]byte, error) {
-	return json.Marshal(u.Base58String())
+	str := u.Base58String()
+	if str == "1111111111111111" {
+		str = ""
+	}
+	return json.Marshal(str)
 }
 
 func (u *UUID) UnmarshalJSON(text []byte) (err error) {
