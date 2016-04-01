@@ -295,11 +295,7 @@ func (u UUID) Base58String() string {
 }
 
 func (u UUID) MarshalJSON() ([]byte, error) {
-	str := u.Base58String()
-	if str == "1111111111111111" {
-		str = ""
-	}
-	return json.Marshal(str)
+	return json.Marshal(u.Base58String())
 }
 
 func (u *UUID) UnmarshalJSON(text []byte) (err error) {
