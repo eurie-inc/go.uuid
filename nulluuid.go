@@ -29,6 +29,7 @@ func (u *NullUUID) Scan(src interface{}) error {
 		return nil
 	}
 
+	u.Valid = true
 	switch src := src.(type) {
 	case []byte:
 		if len(src) == 16 {
@@ -51,10 +52,10 @@ func (u NullUUID) MarshalJSON() ([]byte, error) {
 }
 
 func (u *NullUUID) UnmarshalJSON(text []byte) (err error) {
-
 	if text == nil {
 		u.UUID = Nil
 		u.Valid = false
+		return nil
 	}
 	buf := base58.Decode(strings.Replace(string(text), "\"", "", -1))
 
