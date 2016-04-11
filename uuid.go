@@ -30,7 +30,6 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"database/sql/driver"
-	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
@@ -291,11 +290,6 @@ func (u *UUID) UnmarshalBinary(data []byte) (err error) {
 	return
 }
 
-func (u UUID) Base64String() string {
-
-	return rep.ReplaceAllString(base64.URLEncoding.EncodeToString(u.Bytes()), "")
-}
-
 func (u UUID) Base58String() string {
 	return base58.EncodeAlphabet(u.Bytes(), base58.BTCAlphabet)
 
@@ -306,12 +300,8 @@ func (u UUID) MarshalJSON() ([]byte, error) {
 }
 
 func (u *UUID) UnmarshalJSON(text []byte) (err error) {
-
-	str := string(text)
-	buf := base58.Decode(strings.Replace(str, "\"", "", -1))
-	err = u.UnmarshalBinary(buf)
-
-	return
+	buf := base58.Decode(strings.Replace(string(text), "\"", "", -1))
+	return u.UnmarshalBinary(buf)
 }
 
 func FromBase58String(text string) (u UUID, err error) {

@@ -1,0 +1,3 @@
+package: github.com/eurie-inc/go.uuid
+import:
+- package: github.com/jbenet/go-base58
