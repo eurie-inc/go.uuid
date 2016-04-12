@@ -57,7 +57,6 @@ func TestNullUUID_MarshalJSON(t *testing.T) {
 
 	var u NullUUID
 	u.UUID, _ = FromBase58String(uuidBase58)
-	fmt.Println(u.UUID)
 	u.Valid = true
 
 	a1, err := u.MarshalJSON()
