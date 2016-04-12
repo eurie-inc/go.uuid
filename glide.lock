@@ -1,5 +1,5 @@
 hash: ac95d2aee3c72389f8419d27f8bfe34ee56c6fc3e559cdd38e7d7c4570171009
-updated: 2016-04-12T03:06:32.381298169+09:00
+updated: 2016-04-12T11:55:21.598681833+09:00
 imports:
 - name: github.com/jbenet/go-base58
   version: 6237cf65f3a6f7111cd8a42be3590df99a66bc7d
