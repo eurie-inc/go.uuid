@@ -10,4 +10,4 @@ go:
 sudo: false
 script: go get -u "github.com/stretchr/testify/assert"
 notifications:
-    email: true
+    email: false
