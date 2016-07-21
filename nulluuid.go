@@ -7,7 +7,10 @@ import (
 	"strings"
 
 	"github.com/jbenet/go-base58"
+	"reflect"
 )
+
+var JSONNil = []byte("null")
 
 type NullUUID struct {
 	UUID  UUID
@@ -48,11 +51,11 @@ func (u NullUUID) MarshalJSON() ([]byte, error) {
 	if u.Valid {
 		return json.Marshal(u.UUID.Base58String())
 	}
-	return []byte("null"), nil
+	return JSONNil, nil
 }
 
-func (u *NullUUID) UnmarshalJSON(text []byte) (err error) {
-	if text == nil {
+func (u *NullUUID) UnmarshalJSON(text []byte) error {
+	if text == nil || reflect.DeepEqual(text, JSONNil) {
 		u.UUID = Nil
 		u.Valid = false
 		return nil
