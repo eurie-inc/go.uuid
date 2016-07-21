@@ -83,5 +83,4 @@ func TestNullUUID_UnmarshalJSON(t *testing.T) {
 	assert.Nil(t, err, "err should be nil.")
 	assert.Equal(t, Nil, u.UUID, "In the case of text is nil, UUID should be Nil.")
 	assert.False(t, u.Valid, "In the case of text is nil, Valid should be false.")
-
 }

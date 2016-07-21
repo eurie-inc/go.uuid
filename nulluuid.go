@@ -4,10 +4,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/jbenet/go-base58"
-	"reflect"
 )
 
 var JSONNil = []byte("null")
