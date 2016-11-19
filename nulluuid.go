@@ -22,7 +22,7 @@ func (u NullUUID) Value() (driver.Value, error) {
 	if !u.Valid {
 		return nil, nil
 	}
-	return u.UUID.String(), nil
+	return u.UUID.Value(), nil
 }
 
 func (u *NullUUID) Scan(src interface{}) error {
