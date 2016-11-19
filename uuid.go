@@ -37,7 +37,6 @@ import (
 	"hash"
 	"net"
 	"os"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -137,8 +136,8 @@ var Nil = UUID{}
 
 // Predefined namespace UUIDs.
 var (
-	NamespaceDNS, _  = FromString("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
-	NamespaceURL, _  = FromString("6ba7b811-9dad-11d1-80b4-00c04fd430c8")
+	NamespaceDNS, _ = FromString("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
+	NamespaceURL, _ = FromString("6ba7b811-9dad-11d1-80b4-00c04fd430c8")
 )
 
 // And returns result of binary AND of two UUIDs.
