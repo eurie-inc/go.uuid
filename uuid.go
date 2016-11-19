@@ -57,7 +57,6 @@ const (
 const (
 	DomainPerson = iota
 	DomainGroup
-	DomainOrg
 )
 
 // Difference in 100-nanosecond intervals between
@@ -84,9 +83,6 @@ var (
 	urnPrefix  = []byte("urn:uuid:")
 	byteGroups = []int{8, 4, 4, 4, 12}
 )
-
-// Base64 Format Suffix.
-var rep = regexp.MustCompile(`==$`)
 
 func initClockSequence() {
 	buf := make([]byte, 2)
@@ -143,8 +139,6 @@ var Nil = UUID{}
 var (
 	NamespaceDNS, _  = FromString("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
 	NamespaceURL, _  = FromString("6ba7b811-9dad-11d1-80b4-00c04fd430c8")
-	NamespaceOID, _  = FromString("6ba7b812-9dad-11d1-80b4-00c04fd430c8")
-	NamespaceX500, _ = FromString("6ba7b814-9dad-11d1-80b4-00c04fd430c8")
 )
 
 // And returns result of binary AND of two UUIDs.
@@ -292,14 +286,13 @@ func (u *UUID) UnmarshalBinary(data []byte) (err error) {
 
 func (u UUID) Base58String() string {
 	return base58.EncodeAlphabet(u.Bytes(), base58.BTCAlphabet)
-
 }
 
 func (u UUID) MarshalJSON() ([]byte, error) {
 	return json.Marshal(u.Base58String())
 }
 
-func (u *UUID) UnmarshalJSON(text []byte) (err error) {
+func (u *UUID) UnmarshalJSON(text []byte) error {
 	buf := base58.Decode(strings.Replace(string(text), "\"", "", -1))
 	return u.UnmarshalBinary(buf)
 }
